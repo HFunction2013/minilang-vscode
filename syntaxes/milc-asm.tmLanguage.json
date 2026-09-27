@@ -1,0 +1,69 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "minilang bytecode assembly",
+  "scopeName": "source.mil.bcasm",
+  "patterns": [
+    { "include": "#section" },
+    { "include": "#instruction" },
+    { "include": "#function-entry" },
+    { "include": "#constant-int" },
+    { "include": "#constant-string" }
+  ],
+  "repository": {
+    "section": {
+      "match": "^(===) (.*) (===)$",
+      "captures": {
+        "1": { "name": "punctuation.definition.section.milc" },
+        "2": { "name": "entity.name.section.milc" },
+        "3": { "name": "punctuation.definition.section.milc" }
+      }
+    },
+    "instruction": {
+      "comment": "     0: JMP              43      0",
+      "match": "^(\\s+)([0-9]+)(:)(\\s+)([A-Z_][A-Z_0-9]*)(\\s+)(-?[0-9]+)(\\s+)(-?[0-9]+)\\s*$",
+      "captures": {
+        "2": { "name": "constant.numeric.index.milc" },
+        "3": { "name": "punctuation.separator.milc" },
+        "5": { "name": "keyword.operator.opcode.milc" },
+        "7": { "name": "constant.numeric.integer.milc" },
+        "9": { "name": "constant.numeric.integer.milc" }
+      }
+    },
+    "function-entry": {
+      "comment": "  [0] main addr=1 params=0 locals=2",
+      "match": "^(\\s+)(\\[)([0-9]+)(\\])(\\s+)([A-Za-z_][A-Za-z0-9_.]*)(\\s+)(addr=)([0-9]+)(\\s+)(params=)([0-9]+)(\\s+)(locals=)([0-9]+)\\s*$",
+      "captures": {
+        "2": { "name": "punctuation.definition.bracket.milc" },
+        "3": { "name": "constant.numeric.index.milc" },
+        "4": { "name": "punctuation.definition.bracket.milc" },
+        "6": { "name": "entity.name.function.milc" },
+        "8": { "name": "keyword.other.field.milc" },
+        "9": { "name": "constant.numeric.integer.milc" },
+        "11": { "name": "keyword.other.field.milc" },
+        "12": { "name": "constant.numeric.integer.milc" },
+        "14": { "name": "keyword.other.field.milc" },
+        "15": { "name": "constant.numeric.integer.milc" }
+      }
+    },
+    "constant-int": {
+      "comment": "  [0] 42",
+      "match": "^(\\s+)(\\[)([0-9]+)(\\])(\\s+)(-?[0-9]+)\\s*$",
+      "captures": {
+        "2": { "name": "punctuation.definition.bracket.milc" },
+        "3": { "name": "constant.numeric.index.milc" },
+        "4": { "name": "punctuation.definition.bracket.milc" },
+        "6": { "name": "constant.numeric.integer.milc" }
+      }
+    },
+    "constant-string": {
+      "comment": "  [4] fib(",
+      "match": "^(\\s+)(\\[)([0-9]+)(\\])(\\s+)(.*)$",
+      "captures": {
+        "2": { "name": "punctuation.definition.bracket.milc" },
+        "3": { "name": "constant.numeric.index.milc" },
+        "4": { "name": "punctuation.definition.bracket.milc" },
+        "6": { "name": "string.unquoted.milc" }
+      }
+    }
+  }
+}

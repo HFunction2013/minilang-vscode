@@ -1,0 +1,120 @@
+{
+  "main function": {
+    "prefix": "main",
+    "body": [
+      "func main() {",
+      "\t$0",
+      "\treturn 0;",
+      "}"
+    ],
+    "description": "minilang entry point"
+  },
+  "function": {
+    "prefix": "func",
+    "body": [
+      "func ${1:name}(${2:args}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define a function"
+  },
+  "print line": {
+    "prefix": "println",
+    "body": ["println ${1:expression};"],
+    "description": "Print with newline"
+  },
+  "print toString": {
+    "prefix": "printts",
+    "body": ["println toString(${1:expression});"],
+    "description": "Print an integer via toString"
+  },
+  "if": {
+    "prefix": "if",
+    "body": [
+      "if (${1:condition}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "if statement"
+  },
+  "if else": {
+    "prefix": "ifelse",
+    "body": [
+      "if (${1:condition}) {",
+      "\t$2",
+      "} else {",
+      "\t$0",
+      "}"
+    ],
+    "description": "if/else statement"
+  },
+  "while": {
+    "prefix": "while",
+    "body": [
+      "while (${1:condition}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "while loop"
+  },
+  "for-like while": {
+    "prefix": "for",
+    "body": [
+      "var ${1:i} = 0;",
+      "while (${1:i} < ${2:10}) {",
+      "\t$0",
+      "\t${1:i} = ${1:i} + 1;",
+      "}"
+    ],
+    "description": "Counting loop (minilang has no for)"
+  },
+  "variable": {
+    "prefix": "var",
+    "body": ["var ${1:name} = ${2:0};"],
+    "description": "Declare a variable"
+  },
+  "array": {
+    "prefix": "array",
+    "body": ["var ${1:name} = array(${2:size}, ${3:0});"],
+    "description": "Create an array with array(size, init)"
+  },
+  "array literal": {
+    "prefix": "arrlit",
+    "body": ["var ${1:name} = [${2:1, 2, 3}];"],
+    "description": "Array literal"
+  },
+  "require module": {
+    "prefix": "require",
+    "body": ["require ${1:math};"],
+    "description": "Load a module from syslib"
+  },
+  "require from": {
+    "prefix": "requirefrom",
+    "body": ["require ${1:cos} from ${2:math};"],
+    "description": "Import selected functions from a module"
+  },
+  "read file": {
+    "prefix": "readfile",
+    "body": ["var ${1:content} = readFile(\"${2:path}\");"],
+    "description": "Read a file into a string"
+  },
+  "read lines from stdin": {
+    "prefix": "readall",
+    "body": ["var ${1:input} = readAll();"],
+    "description": "Read all of stdin"
+  },
+  "json parse": {
+    "prefix": "jsonparse",
+    "body": [
+      "require json;",
+      "var ${1:v} = json.parse(${2:text});",
+      "$0"
+    ],
+    "description": "Parse JSON with the json module"
+  },
+  "json stringify": {
+    "prefix": "jsonstringify",
+    "body": ["println json.stringify(${1:v});"],
+    "description": "Serialize a JSON value"
+  }
+}

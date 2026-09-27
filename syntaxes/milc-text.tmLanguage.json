@@ -1,0 +1,62 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "minilang text bytecode",
+  "scopeName": "source.mil.bctext",
+  "patterns": [
+    { "include": "#header" },
+    { "include": "#constant" },
+    { "include": "#function" },
+    { "include": "#instruction" },
+    { "include": "#bare-number" }
+  ],
+  "repository": {
+    "header": {
+      "match": "^MINILANGBC$",
+      "name": "keyword.other.header.milc"
+    },
+    "constant": {
+      "patterns": [
+        {
+          "comment": "string constant: 1 <text>",
+          "match": "^(1)( )(.*)$",
+          "captures": {
+            "1": { "name": "storage.type.milc" },
+            "3": { "name": "string.unquoted.milc" }
+          }
+        },
+        {
+          "comment": "int constant: 0 <value>",
+          "match": "^(0)( )(-?[0-9]+)$",
+          "captures": {
+            "1": { "name": "storage.type.milc" },
+            "3": { "name": "constant.numeric.integer.milc" }
+          }
+        }
+      ]
+    },
+    "function": {
+      "comment": "<name> <address> <params> <locals>",
+      "match": "^([A-Za-z_][A-Za-z0-9_.]*) ([0-9]+) ([0-9]+) ([0-9]+)$",
+      "captures": {
+        "1": { "name": "entity.name.function.milc" },
+        "2": { "name": "constant.numeric.integer.milc" },
+        "3": { "name": "constant.numeric.integer.milc" },
+        "4": { "name": "constant.numeric.integer.milc" }
+      }
+    },
+    "instruction": {
+      "comment": "<op> <op1> <op2>",
+      "match": "^(-?[0-9]+) (-?[0-9]+) (-?[0-9]+)$",
+      "captures": {
+        "1": { "name": "keyword.operator.opcode.milc" },
+        "2": { "name": "constant.numeric.integer.milc" },
+        "3": { "name": "constant.numeric.integer.milc" }
+      }
+    },
+    "bare-number": {
+      "comment": "section lengths (constant count, function count, instruction count)",
+      "match": "^[0-9]+$",
+      "name": "constant.numeric.integer.milc"
+    }
+  }
+}

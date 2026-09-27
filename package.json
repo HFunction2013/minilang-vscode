@@ -1,0 +1,411 @@
+{
+  "name": "minilang",
+  "displayName": "minilang",
+  "description": "Syntax highlighting, diagnostics, hover docs, snippets and build tasks for the minilang language",
+  "version": "0.5.0",
+  "publisher": "minilang",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters"
+  ],
+  "keywords": [
+    "minilang",
+    "mil",
+    "milc",
+    "self-hosting",
+    "compiler"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HFunction2013/minilang-vscode"
+  },
+  "activationEvents": [
+    "onLanguage:minilang",
+    "onCustomEditor:minilang.milcViewer"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "minilang.milcViewer",
+        "displayName": "minilang Bytecode Viewer",
+        "selector": [
+          { "filenamePattern": "*.milc" }
+        ],
+        "priority": "default"
+      }
+    ],
+    "languages": [
+      {
+        "id": "minilang",
+        "aliases": [
+          "minilang",
+          "Minilang"
+        ],
+        "extensions": [
+          ".mil"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/icon.png",
+          "dark": "./images/icon.png"
+        }
+      },
+      {
+        "id": "minilang-bctext",
+        "aliases": [
+          "minilang text bytecode",
+          "MINILANGBC"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "minilang-bcasm",
+        "aliases": [
+          "minilang bytecode assembly",
+          "minilang disassembly"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "minilang",
+        "scopeName": "source.mil",
+        "path": "./syntaxes/minilang.tmLanguage.json"
+      },
+      {
+        "language": "minilang-bctext",
+        "scopeName": "source.mil.bctext",
+        "path": "./syntaxes/milc-text.tmLanguage.json"
+      },
+      {
+        "language": "minilang-bcasm",
+        "scopeName": "source.mil.bcasm",
+        "path": "./syntaxes/milc-asm.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "minilang",
+        "path": "./snippets/minilang.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "minilang.openMilc",
+        "title": "Open .milc…",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.milcShowText",
+        "title": "Show Text Bytecode",
+        "category": "minilang",
+        "icon": "$(symbol-string)"
+      },
+      {
+        "command": "minilang.milcShowAsm",
+        "title": "Show Bytecode Assembly",
+        "category": "minilang",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "minilang.milcRefreshViewer",
+        "title": "Refresh Bytecode View",
+        "category": "minilang",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "minilang.setMilcDefaultEditor",
+        "title": "Make This the Default Editor for .milc",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.openMilcText",
+        "title": "Open .milc as Text Bytecode",
+        "category": "minilang",
+        "icon": "$(file-binary)"
+      },
+      {
+        "command": "minilang.openMilcAsm",
+        "title": "Open .milc as Bytecode Assembly",
+        "category": "minilang",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "minilang.refreshMilc",
+        "title": "Refresh .milc View",
+        "category": "minilang",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "minilang.runTerminal",
+        "title": "Run File in Terminal",
+        "category": "minilang",
+        "icon": "$(play)"
+      },
+      {
+        "command": "minilang.run",
+        "title": "Run File in Output Channel",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.repl",
+        "title": "Start REPL",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.bytecode",
+        "title": "Show Bytecode Disassembly",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.dumpText",
+        "title": "Dump Text Bytecode",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.llvm",
+        "title": "Generate LLVM IR",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.buildBytecode",
+        "title": "Build .milc Bytecode",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.buildNative",
+        "title": "Build Native Executable (LLVM)",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.runTests",
+        "title": "Run All Tests in tests/",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.validateNow",
+        "title": "Check File for Errors",
+        "category": "minilang"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "minilang.runTerminal",
+          "when": "editorLangId == minilang",
+          "group": "navigation@1"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "minilang.openMilcText",
+          "when": "resourceExtname == .milc",
+          "group": "navigation@1"
+        },
+        {
+          "command": "minilang.openMilcAsm",
+          "when": "resourceExtname == .milc",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "minilang.runTerminal",
+          "when": "editorLangId == minilang",
+          "group": "navigation@1"
+        },
+        {
+          "command": "minilang.milcShowText",
+          "when": "activeCustomEditorId == minilang.milcViewer && minilang.milcView == asm",
+          "group": "navigation@2"
+        },
+        {
+          "command": "minilang.milcShowAsm",
+          "when": "activeCustomEditorId == minilang.milcViewer && minilang.milcView == text",
+          "group": "navigation@2"
+        },
+        {
+          "command": "minilang.milcRefreshViewer",
+          "when": "activeCustomEditorId == minilang.milcViewer",
+          "group": "navigation@3"
+        },
+        {
+          "command": "minilang.refreshMilc",
+          "when": "resourceScheme == milc-text || resourceScheme == milc-asm",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "minilang.runTerminal",
+          "when": "editorLangId == minilang",
+          "group": "navigation@1"
+        },
+        {
+          "command": "minilang.bytecode",
+          "when": "editorLangId == minilang",
+          "group": "navigation@2"
+        },
+        {
+          "command": "minilang.validateNow",
+          "when": "editorLangId == minilang",
+          "group": "navigation@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "minilang.openMilc"
+        },
+        {
+          "command": "minilang.milcShowText",
+          "when": "activeCustomEditorId == minilang.milcViewer"
+        },
+        {
+          "command": "minilang.milcShowAsm",
+          "when": "activeCustomEditorId == minilang.milcViewer"
+        },
+        {
+          "command": "minilang.milcRefreshViewer",
+          "when": "activeCustomEditorId == minilang.milcViewer"
+        },
+        {
+          "command": "minilang.setMilcDefaultEditor"
+        },
+        {
+          "command": "minilang.openMilcText",
+          "when": "resourceExtname == .milc"
+        },
+        {
+          "command": "minilang.openMilcAsm",
+          "when": "resourceExtname == .milc"
+        },
+        {
+          "command": "minilang.refreshMilc",
+          "when": "resourceScheme == milc-text || resourceScheme == milc-asm"
+        },
+        {
+          "command": "minilang.runTerminal",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.run",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.repl",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.runTests"
+        },
+        {
+          "command": "minilang.bytecode",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.dumpText",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.llvm",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.buildBytecode",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.buildNative",
+          "when": "editorLangId == minilang"
+        },
+        {
+          "command": "minilang.validateNow",
+          "when": "editorLangId == minilang"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "minilang.runTerminal",
+        "key": "ctrl+F5",
+        "mac": "cmd+F5",
+        "when": "editorLangId == minilang"
+      },
+      {
+        "command": "minilang.run",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r",
+        "when": "editorLangId == minilang"
+      },
+      {
+        "command": "minilang.bytecode",
+        "key": "ctrl+alt+b",
+        "mac": "cmd+alt+b",
+        "when": "editorLangId == minilang"
+      },
+      {
+        "command": "minilang.validateNow",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c",
+        "when": "editorLangId == minilang"
+      }
+    ],
+    "configuration": {
+      "title": "minilang",
+      "properties": {
+        "minilang.path": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the minilang executable. Leave empty to use ./minilang in the workspace, then PATH.",
+          "scope": "machine-overridable"
+        },
+        "minilang.workingDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Working directory used when invoking minilang. Empty = the directory of the current .mil file (so syslib/ resolves).",
+          "scope": "machine-overridable"
+        },
+        "minilang.diagnostics.unsaved": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check the editor buffer as you type (writes a temporary file next to the source so require/syslib still resolves).",
+          "scope": "window"
+        },
+        "minilang.diagnostics.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Report parse and compile errors from the real minilang toolchain as you type.",
+          "scope": "window"
+        }
+      }
+    },
+    "configurationDefaults": {
+      "[minilang]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "smoke": "node ./test/smoke.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.3.3"
+  }
+}
