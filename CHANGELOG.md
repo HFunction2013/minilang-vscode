@@ -4,6 +4,22 @@ This extension is developed in its own repository. The `minilang` compiler it dr
 [HFunction2013/minilang](https://github.com/HFunction2013/minilang) and is released separately
 (see that repository's CHANGELOG).
 
+## 0.6.1
+
+- **Diagnostics never fail silently again.** If the `minilang` binary cannot be
+  found or launched, the extension now shows a warning once and an information
+  diagnostic pinned to the first line of the file (with instructions to build
+  `minilang-boot` / set `minilang.path`), instead of quietly clearing the
+  diagnostics and leaving the editor without any feedback.
+- **No more duplicate squiggles.** When the language server is running it is
+  the single source of diagnostics; the built-in validator is skipped so errors
+  are not reported twice and only one `minilang` process runs per keystroke.
+- The bundled LSP server (`minilang-server`) no longer writes the editor buffer
+  back into the real source file; it validates a temporary staging copy and
+  cleans up after itself. It also reports missing-module and
+  no-exported-function errors (previously matched nothing) and surfaces binary
+  launch failures / crashes as visible diagnostics.
+
 ## 0.6.0
 
 - **Language server.** The extension now launches the new

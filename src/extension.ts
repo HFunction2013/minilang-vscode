@@ -346,8 +346,33 @@ function stageForValidation(doc: vscode.TextDocument, useBuffer: boolean): { fil
     }
 }
 
+/** One-shot guard so a broken toolchain is reported once, not on every keystroke. */
+let toolchainWarningShown = false;
+function warnOnce(message: string) {
+    if (toolchainWarningShown) {
+        return;
+    }
+    toolchainWarningShown = true;
+    void vscode.window.showWarningMessage(message);
+}
+
+/** An information diagnostic pinned to the first line, for toolchain problems. */
+function infoDiagnostic(doc: vscode.TextDocument, message: string): vscode.Diagnostic {
+    return new vscode.Diagnostic(
+        new vscode.Range(0, 0, 0, Number.MAX_SAFE_INTEGER),
+        message,
+        vscode.DiagnosticSeverity.Information
+    );
+}
+
 async function validate(doc: vscode.TextDocument) {
     if (doc.languageId !== 'minilang' || doc.uri.scheme !== 'file') {
+        return;
+    }
+    // When the language server is running it owns diagnostics (it publishes to
+    // its own collection); running the built-in pipeline too would double every
+    // squiggle and spawn a second minilang process per keystroke.
+    if (lcClient) {
         return;
     }
     const cfg = vscode.workspace.getConfiguration('minilang');
@@ -360,8 +385,10 @@ async function validate(doc: vscode.TextDocument) {
     let exe: string;
     try {
         exe = resolveMinilang()!;
-    } catch {
-        diagnosticCollection.delete(doc.uri);
+    } catch (err) {
+        const msg = String((err as Error).message);
+        diagnosticCollection.set(doc.uri, [infoDiagnostic(doc, msg)]);
+        warnOnce(msg);
         return;
     }
 
@@ -371,7 +398,13 @@ async function validate(doc: vscode.TextDocument) {
     const result = await run(exe, ['bytecode', staged.file], cwd);
     staged.cleanup();
     if (result.code === -1) {
-        diagnosticCollection.delete(doc.uri);
+        // Never fail silently: a missing/broken binary is the #1 reason users
+        // think diagnostics are broken. Say so, visibly, instead of clearing.
+        const msg =
+            `Could not launch "${exe}" — code diagnostics are disabled. Build the minilang ` +
+            `toolchain (minilang-boot) and set minilang.path in settings, or add the binary to PATH.`;
+        diagnosticCollection.set(doc.uri, [infoDiagnostic(doc, msg)]);
+        warnOnce(msg);
         return;
     }
 
@@ -1307,6 +1340,26 @@ export function activate(context: vscode.ExtensionContext) {
         if (doc.languageId === 'minilang') {
             validate(doc);
         }
+    }
+
+    // If no language server is running, make sure a usable minilang binary
+    // exists; otherwise diagnostics will silently produce nothing.
+    if (!lcClient) {
+        void (async () => {
+            try {
+                const exe = resolveMinilang()!;
+                const probe = await run(exe, [], workingDirectory());
+                if (probe.code === -1) {
+                    throw new Error(`could not launch "${exe}"`);
+                }
+            } catch (err) {
+                warnOnce(
+                    `minilang binary not found (${(err as Error).message}) — code diagnostics are ` +
+                    `disabled. Build the toolchain from minilang-boot and set minilang.path in ` +
+                    `settings, or add the binary to PATH.`
+                );
+            }
+        })();
     }
 
     // Status bar hint

@@ -2,7 +2,7 @@
   "name": "minilang",
   "displayName": "minilang",
   "description": "Syntax highlighting, diagnostics, hover docs, snippets and build tasks for the minilang language",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "publisher": "minilang",
   "license": "MIT",
   "icon": "images/icon.png",

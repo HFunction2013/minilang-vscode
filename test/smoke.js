@@ -46,12 +46,24 @@ class CompletionItem { constructor(label, kind) { this.label = label; this.kind 
 class SignatureInformation { constructor(label, doc) { this.label = label; this.documentation = doc; } }
 class SignatureHelp { constructor() { this.signatures = []; } }
 class Location { constructor(uri, range) { this.uri = uri; this.range = range; } }
+// Type classes the vscode-languageclient module touches at require() time;
+// they are only read during loading, never used by the smoke-test flows.
+class CodeLens { constructor(range, command) { this.range = range; this.command = command; } }
+class CodeAction { constructor(title, kind) { this.title = title; this.kind = kind; } }
+class CodeActionKind { constructor(v) { this.value = v; } }
+class DiagnosticRelatedInformation { constructor(location, message) { this.location = location; this.message = message; } }
+class TextEdit { constructor(range, newText) { this.range = range; this.newText = newText; } }
+class WorkspaceEdit { constructor() { this.entries = []; } }
+class Command { constructor(title, command, args) { this.title = title; this.command = command; this.arguments = args; } }
 
 const settings = {
     'minilang.path': MIL,
     'minilang.workingDirectory': '',
     'minilang.diagnostics.enable': true,
     'minilang.diagnostics.unsaved': true,
+    // The smoke test drives the built-in providers; the LSP client is a no-op
+    // here (its own end-to-end tests live in the minilang-server repo).
+    'minilang.useLanguageServer': false,
 };
 
 const registered = new Map();
@@ -66,7 +78,8 @@ let terminalCommand = null;
 
 const vscodeMock = {
     Position, Range, Uri, MarkdownString, Hover, Diagnostic, CompletionItem,
-    SignatureInformation, SignatureHelp, Location,
+    SignatureInformation, SignatureHelp, Location, CodeLens, CodeAction, CodeActionKind,
+    DiagnosticRelatedInformation, TextEdit, WorkspaceEdit, Command,
     DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
     CompletionItemKind: { Function: 2, Keyword: 13, Value: 11, Module: 8 },
     StatusBarAlignment: { Left: 1, Right: 2 },
@@ -141,7 +154,20 @@ Module._resolveFilename = function (request, ...rest) {
     if (request === 'vscode') { return 'vscode'; }
     return realResolve.call(this, request, ...rest);
 };
-require.cache['vscode'] = { id: 'vscode', filename: 'vscode', loaded: true, exports: vscodeMock };
+// Any vscode.* type the language-client reads at require() time that the mock
+// does not define gets a generic class, so module loading never dies on a
+// missing type (the smoke flows only use the concretely defined APIs).
+require.cache['vscode'] = {
+    id: 'vscode',
+    filename: 'vscode',
+    loaded: true,
+    exports: new Proxy(vscodeMock, {
+        get(target, prop) {
+            if (prop in target) { return target[prop]; }
+            return class {};
+        },
+    }),
+};
 
 // ---- fake document ---------------------------------------------------------
 function makeDoc(fsPath, text, dirty) {

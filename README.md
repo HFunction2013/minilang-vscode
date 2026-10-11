@@ -16,15 +16,18 @@ Language support for [minilang](https://github.com/HFunction2013/minilang-compil
 
 ## Requirements
 
-The extension shells out to the `minilang` binary, which lives in a separate repository
-([HFunction2013/minilang-compiler](https://github.com/HFunction2013/minilang-compiler)). Clone and build it —
-and rebuild it after upgrading this extension. Reading `.milc` bytecode is a recent CLI
-feature, and an older binary will fail with "Unexpected character" when the viewer asks it
-to dump a bytecode file:
+The extension shells out to the `minilang` binary. The binary is built from the
+C bootstrap toolchain in [HFunction2013/minilang-boot](https://github.com/HFunction2013/minilang-boot)
+(the compiler's own sources live in [HFunction2013/minilang-compiler](https://github.com/HFunction2013/minilang-compiler)
+and are *run by* that bootstrap binary). Rebuild the binary after upgrading this
+extension. Reading `.milc` bytecode is a recent CLI feature, and an older binary
+will fail with "Unexpected character" when the viewer asks it to dump a bytecode
+file:
 
 ```bash
-git clone https://github.com/HFunction2013/minilang-compiler.git
-cd minilang
+git clone https://github.com/HFunction2013/minilang-boot.git
+cd minilang-boot
+git submodule update --init --recursive   # syslib modules (math, json, io, ...)
 make
 ```
 
@@ -32,7 +35,7 @@ Then point the extension at it if it is not in your `PATH`:
 
 ```jsonc
 {
-  "minilang.path": "/path/to/minilang/minilang"
+  "minilang.path": "/path/to/minilang-boot/minilang"
 }
 ```
 
@@ -43,6 +46,25 @@ Resolution order:
 3. `minilang` on `PATH`
 
 Diagnostics and every command run with the current file's directory as the working directory, so `require` and `syslib/` resolve correctly. Override this with `minilang.workingDirectory`.
+
+### Why am I seeing no error squiggles?
+
+Diagnostics come from the real `minilang` binary, and the extension deliberately
+tells you when the pipeline is broken instead of staying quiet. If errors are
+not appearing, check, in order:
+
+1. **Is there a `minilang` binary at all?** On activation the extension probes
+   for one and shows a warning if it is missing. Follow the build steps above.
+2. **Is it the version the extension expects?** Rebuild after upgrading the
+   extension; an old binary may fail to lex/compile in a way that yields no
+   usable error output.
+3. **Language server health.** With `minilang.useLanguageServer` (default `true`)
+   the `minilang-server` LSP handles diagnostics. If it was not built
+   (`minilang-server/out/server.js` missing), a warning tells you it is falling
+   back to the built-in providers; make sure `npm install && npm run build` was
+   run in the `minilang-server` checkout.
+4. **The file must be a real `.mil` file** (`scheme: file`, language id
+   `minilang`) — unsaved scratch buffers are not validated.
 
 ## Commands
 
