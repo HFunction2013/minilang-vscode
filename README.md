@@ -129,6 +129,14 @@ MINILANG_BIN=/path/to/minilang/minilang npm run smoke
 
 **`.milc` opens in a normal text editor** — run **minilang: Make This the Default Editor for .milc**, or use **Open With… → minilang Bytecode Viewer**.
 
+**"Activating extension 'vadimcn.vscode-lldb' failed: a.lm.registerTool is not a function"** — this error is **not** caused by this extension. `vadimcn.vscode-lldb` (CodeLLDB) is a separate, third-party debugger extension. Newer CodeLLDB releases call VS Code's language-model tool API (`vscode.lm.registerTool`, available since VS Code 1.99) during activation, so when your VS Code is older than that, activation throws `a.lm.registerTool is not a function` and VS Code stops loading the extension. Fixes, in order of preference:
+
+1. **Update VS Code** to 1.99 or newer (Help → About → check the version; or reinstall from code.visualstudio.com). This is the cleanest fix.
+2. If you cannot update VS Code, install an **older CodeLLDB** release that does not use the `lm` API (for example 1.10.x, via "Install Another Version…" in the Extensions view).
+3. If you do not use CodeLLDB's debugging, simply **disable or uninstall** it (`Extensions` view → `CodeLLDB` → Disable).
+
+This extension neither depends on CodeLLDB nor triggers its activation — the two only appear together on the same notification because VS Code reports one failing extension at a time.
+
 ## Known limitations
 
 - Diagnostic positions: `Parse error line N` gives an exact line. `Compile error: undefined function 'foo'` has no position from the compiler, so the extension looks up the first line mentioning `foo` and reports there — which is usually, but not always, the right one.
