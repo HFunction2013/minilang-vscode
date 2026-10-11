@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node';
 import { BUILTINS, MODULES, MODULE_FUNCTION_NAMES, findDoc } from './builtins';
 
 const MIL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: 'minilang' };
@@ -9,6 +10,7 @@ const OUTPUT_CHANNEL_NAME = 'minilang';
 
 let outputChannel: vscode.OutputChannel;
 let diagnosticCollection: vscode.DiagnosticCollection;
+let lcClient: LanguageClient | undefined;
 
 // ============================================================================
 // Toolchain resolution
@@ -47,6 +49,20 @@ function isExecutable(p: string): boolean {
     } catch {
         return false;
     }
+}
+
+/** Locate minilang-server's compiled server.js: config, bundled, or sibling checkout. */
+function resolveServerModule(context: vscode.ExtensionContext): string | undefined {
+    const cfg = vscode.workspace.getConfiguration('minilang').get<string>('serverPath')?.trim();
+    if (cfg && fs.existsSync(cfg)) return cfg;
+    const bundled = context.asAbsolutePath(path.join('server', 'out', 'server.js'));
+    if (fs.existsSync(bundled)) return bundled;
+    // Dev fallback: a sibling ../minilang-server checkout.
+    for (const folder of vscode.workspace.workspaceFolders ?? []) {
+        const cand = path.join(folder.uri.fsPath, '..', 'minilang-server', 'out', 'server.js');
+        if (fs.existsSync(cand)) return cand;
+    }
+    return undefined;
 }
 
 /** Directory used as cwd when invoking minilang, so require/syslib resolves. */
@@ -1173,6 +1189,30 @@ export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel(OUTPUT_CHANNEL_NAME);
     context.subscriptions.push(outputChannel);
 
+    // ---- Language server (minilang-server) -------------------------------
+    const useServer = vscode.workspace.getConfiguration('minilang').get<boolean>('useLanguageServer', true);
+    if (useServer) {
+        const serverModule = resolveServerModule(context);
+        if (serverModule) {
+            const serverOptions: ServerOptions = {
+                run: { module: serverModule, transport: TransportKind.stdio },
+                debug: { module: serverModule, transport: TransportKind.stdio },
+            };
+            const clientOptions: LanguageClientOptions = {
+                documentSelector: [{ scheme: 'file', language: 'minilang' }],
+                synchronize: { configurationSection: 'minilang' },
+                initializationOptions: {},
+            };
+            lcClient = new LanguageClient('minilang-server', 'minilang Language Server', serverOptions, clientOptions);
+            lcClient.start();
+            context.subscriptions.push(lcClient);
+        } else {
+            vscode.window.showWarningMessage(
+                'minilang language server not found (set minilang.serverPath); falling back to built-in providers.'
+            );
+        }
+    }
+
     diagnosticCollection = vscode.languages.createDiagnosticCollection('minilang');
     context.subscriptions.push(diagnosticCollection);
 
@@ -1286,7 +1326,10 @@ export function activate(context: vscode.ExtensionContext) {
     updateStatus();
 }
 
-export function deactivate() {
+export async function deactivate() {
+    if (lcClient) {
+        await lcClient.stop();
+    }
     if (outputChannel) {
         outputChannel.dispose();
     }

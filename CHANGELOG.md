@@ -4,6 +4,16 @@ This extension is developed in its own repository. The `minilang` compiler it dr
 [HFunction2013/minilang](https://github.com/HFunction2013/minilang) and is released separately
 (see that repository's CHANGELOG).
 
+## 0.6.0
+
+- **Language server.** The extension now launches the new
+  [`minilang-server`](https://github.com/HFunction2013/minilang-server) LSP server (over stdio)
+  for diagnostics, hover and completion. Set `minilang.useLanguageServer` to `false` to fall back
+  to the previous built-in providers, and `minilang.serverPath` to point at a custom build.
+- **Native methods.** Hover/completion now include the C-native methods (`sqrt`, `abs`, `time`,
+  `clock_ms`, `getenv`, `cwrite`, `exit`, `csystem`) declared in `syslib/builtin.mil`.
+- Diagnostics track the new boot toolchain (`minilang-boot`) and LLVM-binary linking.
+
 ## 0.5.0
 
 - **View-switching moved to the editor title bar.** "Show Text Bytecode" / "Show Bytecode Assembly" / "Refresh" now sit at the right end of the tab strip, next to the split-editor and "…" buttons, instead of being a toolbar inside the webview. Only the view you are *not* currently on is offered, so it acts as a toggle.
