@@ -1,8 +1,10 @@
 # Change Log
 
 This extension is developed in its own repository. The `minilang` compiler it drives lives in
-[HFunction2013/minilang](https://github.com/HFunction2013/minilang) and is released separately
-(see that repository's CHANGELOG).
+[HFunction2013/minilang-compiler](https://github.com/HFunction2013/minilang-compiler)
+(the C bootstrap toolchain in
+[HFunction2013/minilang-boot](https://github.com/HFunction2013/minilang-boot))
+and is released separately (see that repository's CHANGELOG).
 
 ## 0.6.1
 
