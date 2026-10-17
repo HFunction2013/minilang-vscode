@@ -86,7 +86,7 @@ not appearing, check, in order:
 | minilang: Dump Text Bytecode | | `MINILANGBC` text format |
 | minilang: Generate LLVM IR | | Emit `.ll` |
 | minilang: Build .milc Bytecode | | Binary bytecode, magic `!milc` |
-| minilang: Build Native Executable | | LLVM backend (needs `llvmlite` + `gcc`) |
+| minilang: Build Native Executable | | LLVM backend (needs `llc` + `clang`, see minilang-boot) |
 | minilang: Run All Tests in tests/ | | Run every `.mil` under `tests/` |
 
 ### Viewing `.milc` bytecode files

@@ -265,7 +265,7 @@ async function commandBuildBytecode() {
     vscode.window.showInformationMessage(`Bytecode written: ${out}`);
 }
 
-/** Build a native executable via the LLVM backend (needs llvmlite + gcc). */
+/** Build a native executable via the LLVM backend (drives `minilang build -e`, which uses llc + clang). */
 async function commandBuildNative() {
     const doc = await ensureSaved();
     const file = doc?.uri.fsPath ?? activeMilFile();
