@@ -46,10 +46,6 @@
     "numbers": {
       "patterns": [
         {
-          "name": "constant.numeric.hex.mil",
-          "match": "\\b0[xX][0-9a-fA-F_]+\\b"
-        },
-        {
           "name": "constant.numeric.decimal.mil",
           "match": "\\b\\d[\\d_]*\\b"
         }
@@ -72,10 +68,6 @@
         {
           "name": "keyword.other.from.mil",
           "match": "\\b(from|in)\\b"
-        },
-        {
-          "name": "constant.language.mil",
-          "match": "\\b(true|false|nil)\\b"
         }
       ]
     },
