@@ -59,7 +59,7 @@
       "patterns": [
         {
           "name": "keyword.control.mil",
-          "match": "\\b(var|func|if|else|while|return|break)\\b"
+          "match": "\\b(var|func|if|else|while|return|break|native)\\b"
         },
         {
           "name": "keyword.other.mil",
