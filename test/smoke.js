@@ -343,10 +343,10 @@ const cases = [
     // text view
     const textUri = Uri.file(milc).with({ scheme: 'milc-text' });
     const textBytes = await textProvider.readFile(textUri);
-    const textOut = Buffer.from(textBytes).toString('utf8');
+    const textOut = Buffer.from(textBytes).toString('utf8').replace(/\r\n/g, '\n');
     if (textOut.startsWith('MINILANGBC\n')) { console.log('PASS  milc-text renders MINILANGBC'); pass++; }
     else { console.log('FAIL  milc-text -> ' + JSON.stringify(textOut.slice(0, 60))); fail++; }
-    const expectedText = execFileSync(MIL, ['dump-text', milc], { cwd: path.dirname(MIL) }).toString();
+    const expectedText = execFileSync(MIL, ['dump-text', milc], { cwd: path.dirname(MIL) }).toString().replace(/\r\n/g, '\n');
     if (textOut.trim() === expectedText.trim()) { console.log('PASS  milc-text matches CLI dump-text'); pass++; }
     else { console.log('FAIL  milc-text differs from CLI'); fail++; }
 
@@ -463,8 +463,8 @@ const cases = [
     else { console.log('FAIL  context -> ' + JSON.stringify(contexts)); fail++; }
 
     // rendered content matches the CLI exactly
-    const cliText = execFileSync(MIL, ['dump-text', milc], { cwd: path.dirname(MIL) }).toString();
-    if (decodeHtml(panel.webview.html).trim() === cliText.trim()) {
+    const cliText = execFileSync(MIL, ['dump-text', milc], { cwd: path.dirname(MIL) }).toString().replace(/\r\n/g, '\n');
+    if (decodeHtml(panel.webview.html).replace(/\r\n/g, '\n').trim() === cliText.trim()) {
         console.log('PASS  webview content matches CLI dump-text'); pass++;
     } else { console.log('FAIL  webview content differs'); fail++; }
 
