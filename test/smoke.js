@@ -361,7 +361,7 @@ const cases = [
 
     // stat reports a readonly file of the right size
     const st = await textProvider.stat(textUri);
-    if (st.type === 1 && st.size === Buffer.byteLength(textOut) && st.permissions === 1) {
+    if (st.type === 1 && st.size === Buffer.byteLength(textBytes) && st.permissions === 1) {
         console.log(`PASS  milc-text stat (size=${st.size}, readonly)`); pass++;
     } else { console.log('FAIL  milc-text stat -> ' + JSON.stringify(st)); fail++; }
 
@@ -505,6 +505,9 @@ const cases = [
 
     // a stale minilang binary gets an actionable hint instead of a bare lexer error.
     // We simulate it by pointing minilang.path at a binary that cannot read .milc.
+    // The fake is a shell script, so this case only runs on POSIX; on Windows the
+    // extension would spawn it through cmd.exe, which is a different code path.
+    if (process.platform !== 'win32') {
     settings['minilang.path'] = path.join(tmpDir, 'stale-minilang');
     fs.writeFileSync(path.join(tmpDir, 'stale-minilang'),
         '#!/bin/sh\necho "Unexpected character X at line 1" >&2\nexit 1\n', { mode: 0o755 });
@@ -514,6 +517,7 @@ const cases = [
         console.log('PASS  stale-binary error suggests running make'); pass++;
     } else { console.log('FAIL  no stale-binary hint -> ' + panel.webview.html.slice(-300)); fail++; }
     settings['minilang.path'] = MIL;
+    }
 
     // HTML escaping: a file name with markup must not inject tags
     const tricky = path.join(tmpDir, 'a<b>&c.milc');
