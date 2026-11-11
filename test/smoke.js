@@ -519,7 +519,10 @@ const cases = [
     settings['minilang.path'] = MIL;
     }
 
-    // HTML escaping: a file name with markup must not inject tags
+    // HTML escaping: a file name with markup must not inject tags.
+    // The name uses < > &, which are illegal characters in Windows filenames,
+    // so this case only runs on POSIX.
+    if (process.platform !== 'win32') {
     const tricky = path.join(tmpDir, 'a<b>&c.milc');
     fs.copyFileSync(milc, tricky);
     const trickyDoc = provider.openCustomDocument(Uri.file(tricky));
@@ -528,6 +531,7 @@ const cases = [
     if (!panel.webview.html.includes('<b>') && panel.webview.html.includes('a&lt;b&gt;&amp;c.milc')) {
         console.log('PASS  file name is HTML-escaped'); pass++;
     } else { console.log('FAIL  escaping -> ' + (panel.webview.html.match(/a<[^)]{0,20}/) || ['none'])[0]); fail++; }
+    }
 
     console.log(`\n${pass} passed, ${fail} failed`);
     process.exit(fail === 0 ? 0 : 1);
