@@ -119,6 +119,19 @@ export const BUILTINS: BuiltinDoc[] = [
     },
 ];
 
+// C-native methods: declared in syslib/builtin.mil, implemented in native.c
+// (minilang-boot). Loaded by the VM through ml_native_lookup.
+export const NATIVES: BuiltinDoc[] = [
+    { name: 'sqrt', signature: 'sqrt(n)', detail: 'integer sqrt (C native)', doc: 'Floor of sqrt(n); n < 0 gives 0. Implemented in C.' },
+    { name: 'abs', signature: 'abs(n)', detail: 'absolute value (C native)', doc: '|n|. Implemented in C.' },
+    { name: 'time', signature: 'time()', detail: 'unix time (C native)', doc: 'Seconds since the Unix epoch.' },
+    { name: 'clock_ms', signature: 'clock_ms()', detail: 'monotonic ms (C native)', doc: 'Milliseconds since process start.' },
+    { name: 'getenv', signature: 'getenv(name)', detail: 'environment variable (C native)', doc: 'Value of an environment variable; "" if unset.' },
+    { name: 'cwrite', signature: 'cwrite(s)', detail: 'write to stdout (C native)', doc: 'Write s directly to stdout; returns 1.' },
+    { name: 'exit', signature: 'exit(code)', detail: 'exit process (C native)', doc: 'Terminate the process with the given exit code.' },
+    { name: 'csystem', signature: 'csystem(cmd)', detail: 'shell command (C native)', doc: 'Run cmd via the shell; returns the exit code.' },
+];
+
 // syslib module documentation: module name -> function list
 export interface ModuleDoc {
     name: string;
@@ -329,6 +342,9 @@ for (const m of MODULES) {
 const byBuiltin = new Map<string, BuiltinDoc>();
 for (const b of BUILTINS) {
     byBuiltin.set(b.name, b);
+}
+for (const n of NATIVES) {
+    byBuiltin.set(n.name, n);
 }
 
 // Names of every function defined by syslib modules, used for completion

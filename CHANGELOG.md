@@ -6,6 +6,20 @@ This extension is developed in its own repository. The `minilang` compiler it dr
 [HFunction2013/minilang-boot](https://github.com/HFunction2013/minilang-boot))
 and is released separately (see that repository's CHANGELOG).
 
+## 0.6.2
+
+- **Native language surface in the fallback providers.** The built-in (non-LSP)
+  completion now offers the `native` keyword, the eight C-native methods
+  (`sqrt`, `abs`, `time`, `clock_ms`, `getenv`, `cwrite`, `exit`, `csystem`)
+  with hover docs, and two new snippets: `native func name(args);` and
+  `require ... from builtin;`.
+- The grammar highlights the eight C-native methods as
+  `support.function.native.mil` on top of the existing `native` keyword and
+  the rest of the 13 keywords.
+- The language server (minilang-server) onboarding now documents both ways to
+  run C extensions — `run -e` and `build -e [--dynamic]` — plus OpaqueType and
+  the Windows DLL packaging.
+
 ## 0.6.1
 
 - **Diagnostics never fail silently again.** If the `minilang` binary cannot be

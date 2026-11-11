@@ -76,6 +76,10 @@
         {
           "name": "support.function.builtin.mil",
           "match": "\\b(len|charAt|substr|toString|toInt|strcmp|readAll|array|argc|argv|readFile|fileExists|writeFile|system|readLine|readFileBytes|writeFileBytes|chr)\\b"
+        },
+        {
+          "name": "support.function.native.mil",
+          "match": "\\b(sqrt|abs|time|clock_ms|getenv|cwrite|exit|csystem)\\b"
         }
       ]
     },

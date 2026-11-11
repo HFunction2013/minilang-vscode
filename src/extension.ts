@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node';
-import { BUILTINS, MODULES, MODULE_FUNCTION_NAMES, findDoc } from './builtins';
+import { BUILTINS, NATIVES, MODULES, MODULE_FUNCTION_NAMES, findDoc } from './builtins';
 
 const MIL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: 'minilang' };
 const OUTPUT_CHANNEL_NAME = 'minilang';
@@ -556,7 +556,7 @@ class MilCompletionProvider implements vscode.CompletionItemProvider {
         }
 
         // Keywords
-        for (const kw of ['var', 'func', 'if', 'else', 'while', 'return', 'break', 'print', 'println', 'require', 'from', 'in']) {
+        for (const kw of ['var', 'func', 'native', 'if', 'else', 'while', 'return', 'break', 'print', 'println', 'require', 'from', 'in']) {
             const item = new vscode.CompletionItem(kw, vscode.CompletionItemKind.Keyword);
             items.push(item);
         }
@@ -569,6 +569,13 @@ class MilCompletionProvider implements vscode.CompletionItemProvider {
             const item = new vscode.CompletionItem(b.name, vscode.CompletionItemKind.Function);
             item.detail = b.signature;
             item.documentation = new vscode.MarkdownString(b.doc);
+            items.push(item);
+        }
+        // C-native methods (syslib/builtin.mil, implemented in native.c)
+        for (const n of NATIVES) {
+            const item = new vscode.CompletionItem(n.name, vscode.CompletionItemKind.Function);
+            item.detail = n.signature;
+            item.documentation = new vscode.MarkdownString(n.doc + '\n\nDeclared in `syslib/builtin.mil`; implemented in C.');
             items.push(item);
         }
         // Functions defined in this file

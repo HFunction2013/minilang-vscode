@@ -93,6 +93,16 @@
     "body": ["require ${1:cos} from ${2:math};"],
     "description": "Import selected functions from a module"
   },
+  "require from builtin": {
+    "prefix": "requirebuiltin",
+    "body": ["require ${1:sqrt, abs} from builtin;"],
+    "description": "Import C-native functions (sqrt/abs/time/clock_ms/getenv/cwrite/exit/csystem)"
+  },
+  "native function": {
+    "prefix": "nativefunc",
+    "body": ["native func ${1:name}(${2:args});"],
+    "description": "Declare a C-implemented native function (no body; implement ml_native_<name> in C)"
+  },
   "read file": {
     "prefix": "readfile",
     "body": ["var ${1:content} = readFile(\"${2:path}\");"],
