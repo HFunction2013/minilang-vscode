@@ -1,6 +1,6 @@
 # minilang for VS Code
 
-Language support for [minilang](https://github.com/HFunction2013/minilang-compiler) — a self-hosting toy language with a bytecode VM and an LLVM backend.
+Language support for [minilang](https://github.com/HFunction2013/minilang-compiler) — a self-hosting toy language with a bytecode VM and a C native backend.
 
 ## Features
 
@@ -11,7 +11,7 @@ Language support for [minilang](https://github.com/HFunction2013/minilang-compil
 - **Signature help** while typing call arguments
 - **Go to definition** — jump to a function in the current file, or into `syslib/<module>.mil`
 - **Snippets** — `main`, `func`, `if`, `ifelse`, `while`, `for`, `var`, `array`, `require`, `jsonparse` …
-- **Commands** — run in terminal, run in output channel, REPL, bytecode, dump-text, LLVM IR, build `.milc`, build native, run all tests
+- **Commands** — run in terminal, run in output channel, REPL, bytecode, dump-text, generate C source, build `.milc`, build native, run all tests
 - **`.milc` viewer** — double-click a `.milc` file and it opens directly as bytecode, with **Show Text Bytecode** / **Show Bytecode Assembly** toggles in the editor title bar
 
 ## Requirements
@@ -84,9 +84,9 @@ not appearing, check, in order:
 | minilang: Show Bytecode Disassembly | `Ctrl+Alt+B` / `Cmd+Alt+B` | Human-readable bytecode |
 | minilang: Check File for Errors | `Ctrl+Alt+C` / `Cmd+Alt+C` | Force a re-check now |
 | minilang: Dump Text Bytecode | | `MINILANGBC` text format |
-| minilang: Generate LLVM IR | | Emit `.ll` |
+| minilang: Generate C Source | | Emit `.c` |
 | minilang: Build .milc Bytecode | | Binary bytecode, magic `!milc` |
-| minilang: Build Native Executable | | LLVM backend (needs `llc` + `clang`, see minilang-boot) |
+| minilang: Build Native Executable | | C backend (system cc `-O2`, see minilang-boot) |
 | minilang: Run All Tests in tests/ | | Run every `.mil` under `tests/` |
 
 ### Viewing `.milc` bytecode files

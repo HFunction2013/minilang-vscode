@@ -171,8 +171,8 @@
         "category": "minilang"
       },
       {
-        "command": "minilang.llvm",
-        "title": "Generate LLVM IR",
+        "command": "minilang.c",
+        "title": "Generate C Source",
         "category": "minilang"
       },
       {
@@ -182,7 +182,7 @@
       },
       {
         "command": "minilang.buildNative",
-        "title": "Build Native Executable (LLVM)",
+        "title": "Build Native Executable",
         "category": "minilang"
       },
       {
@@ -315,7 +315,7 @@
           "when": "editorLangId == minilang"
         },
         {
-          "command": "minilang.llvm",
+          "command": "minilang.c",
           "when": "editorLangId == minilang"
         },
         {

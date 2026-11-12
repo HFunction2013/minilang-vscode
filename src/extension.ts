@@ -243,14 +243,14 @@ async function commandDumpText() {
     await runMinilangCommand(['dump-text', file], 'dump-text', file);
 }
 
-/** Emit LLVM IR. */
-async function commandLlvm() {
+/** Emit C source. */
+async function commandC() {
     const doc = await ensureSaved();
     const file = doc?.uri.fsPath ?? activeMilFile();
     if (!file) {
         return;
     }
-    await runMinilangCommand(['llvm', file], 'llvm', file);
+    await runMinilangCommand(['c', file], 'c', file);
 }
 
 /** Build a .milc bytecode file (binary, magic "!milc"). */
@@ -265,7 +265,7 @@ async function commandBuildBytecode() {
     vscode.window.showInformationMessage(`Bytecode written: ${out}`);
 }
 
-/** Build a native executable via the LLVM backend (drives `minilang build -e`, which uses llc + clang). */
+/** Build a native executable via the C backend (drives `minilang build -e`, which emits C and compiles it with the system cc -O2). */
 async function commandBuildNative() {
     const doc = await ensureSaved();
     const file = doc?.uri.fsPath ?? activeMilFile();
@@ -1290,7 +1290,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('minilang.run', commandRun),
         vscode.commands.registerCommand('minilang.bytecode', commandBytecode),
         vscode.commands.registerCommand('minilang.dumpText', commandDumpText),
-        vscode.commands.registerCommand('minilang.llvm', commandLlvm),
+        vscode.commands.registerCommand('minilang.c', commandC),
         vscode.commands.registerCommand('minilang.buildBytecode', commandBuildBytecode),
         vscode.commands.registerCommand('minilang.buildNative', commandBuildNative),
         vscode.commands.registerCommand('minilang.runTests', commandRunTests),
