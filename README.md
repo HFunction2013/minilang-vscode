@@ -87,6 +87,8 @@ not appearing, check, in order:
 | minilang: Generate C Source | | Emit `.c` |
 | minilang: Build .milc Bytecode | | Binary bytecode, magic `!milc` |
 | minilang: Build Native Executable | | C backend (system cc `-O2`, see minilang-boot) |
+| minilang: Generate Extension Header + Stub | | `genheader`: packed-ABI `.h` + stub `.c` for native funcs |
+| minilang: Compile Extension Shared Library | | `compileheader`: precompile the stub into `.so`/`.dylib`/`.dll` |
 | minilang: Run All Tests in tests/ | | Run every `.mil` under `tests/` |
 
 ### Viewing `.milc` bytecode files

@@ -186,6 +186,16 @@
         "category": "minilang"
       },
       {
+        "command": "minilang.genHeader",
+        "title": "Generate Extension Header + Stub",
+        "category": "minilang"
+      },
+      {
+        "command": "minilang.compileHeader",
+        "title": "Compile Extension Shared Library",
+        "category": "minilang"
+      },
+      {
         "command": "minilang.runTests",
         "title": "Run All Tests in tests/",
         "category": "minilang"

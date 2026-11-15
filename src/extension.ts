@@ -275,6 +275,26 @@ async function commandBuildNative() {
     await runMinilangCommand(['build', '-e', file], 'build -e', file);
 }
 
+/** Emit a packed-ABI C header + stub source for the file's native funcs. */
+async function commandGenHeader() {
+    const doc = await ensureSaved();
+    const file = doc?.uri.fsPath ?? activeMilFile();
+    if (!file) {
+        return;
+    }
+    await runMinilangCommand(['genheader', file], 'genheader', file);
+}
+
+/** Precompile the generated stub into a shared library. */
+async function commandCompileHeader() {
+    const doc = await ensureSaved();
+    const file = doc?.uri.fsPath ?? activeMilFile();
+    if (!file) {
+        return;
+    }
+    await runMinilangCommand(['compileheader', file], 'compileheader', file);
+}
+
 /** Run everything under tests/ in the workspace. */
 async function commandRunTests() {
     const folders = vscode.workspace.workspaceFolders;
@@ -1293,6 +1313,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('minilang.c', commandC),
         vscode.commands.registerCommand('minilang.buildBytecode', commandBuildBytecode),
         vscode.commands.registerCommand('minilang.buildNative', commandBuildNative),
+        vscode.commands.registerCommand('minilang.genHeader', commandGenHeader),
+        vscode.commands.registerCommand('minilang.compileHeader', commandCompileHeader),
         vscode.commands.registerCommand('minilang.runTests', commandRunTests),
         vscode.commands.registerCommand('minilang.validateNow', async () => {
             const doc = vscode.window.activeTextEditor?.document;
