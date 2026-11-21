@@ -6,6 +6,14 @@ This extension is developed in its own repository. The `minilang` compiler it dr
 [HFunction2013/minilang-boot](https://github.com/HFunction2013/minilang-boot))
 and is released separately (see that repository's CHANGELOG).
 
+## Unreleased
+
+- Native backend switched from LLVM IR to C source emitted by the boot C backend
+  and compiled with the system cc `-O2`.
+- The `llvm` command and palette entry are now `c` (Generate C Source).
+- Extensions must be precompiled into an object / archive / shared library; raw
+  `.c` sources are rejected by the toolchain.
+
 ## 0.6.2
 
 - **Native language surface in the fallback providers.** The built-in (non-LSP)
